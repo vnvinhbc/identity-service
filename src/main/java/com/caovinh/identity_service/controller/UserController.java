@@ -4,6 +4,7 @@ import com.caovinh.identity_service.dto.request.UserCreationRequest;
 import com.caovinh.identity_service.dto.request.UserUpdateRequest;
 import com.caovinh.identity_service.entity.User;
 import com.caovinh.identity_service.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    User createUser(@RequestBody UserCreationRequest user) {
+    User createUser(@RequestBody @Valid UserCreationRequest user) {
         return userService.createUser(user);
     }
     @GetMapping
