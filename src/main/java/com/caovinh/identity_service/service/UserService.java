@@ -3,6 +3,8 @@ package com.caovinh.identity_service.service;
 import com.caovinh.identity_service.dto.request.UserCreationRequest;
 import com.caovinh.identity_service.dto.request.UserUpdateRequest;
 import com.caovinh.identity_service.entity.User;
+import com.caovinh.identity_service.exception.AppException;
+import com.caovinh.identity_service.exception.ErrorCode;
 import com.caovinh.identity_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ public class UserService {
         User user = new User();
 
         if (userRepository.existsByUsername(request.getUsername())){
-            throw new RuntimeException("Username already exists: " + request.getUsername());
+            throw new AppException(ErrorCode.USERNAME_ALREADY_EXISTS);
         }
 
         user.setId(request.getId());
@@ -35,23 +37,20 @@ public class UserService {
     }
 
     public User getUserById(String userId){
-        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        return userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
     public User updateUser(String userId, UserUpdateRequest request ){
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         user.setPassword(request.getPassword());
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setDob(request.getDob());
         return userRepository.save(user);
     }
-    public void deleteUser(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        userRepository.delete(user);
-    }
+
     public User updateUserPartially(String userId, UserUpdateRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         if (request.getPassword() != null) {
             user.setPassword(request.getPassword());
         }
@@ -65,5 +64,10 @@ public class UserService {
             user.setDob(request.getDob());
         }
         return userRepository.save(user);
+    }
+
+    public void deleteUser(String userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        userRepository.delete(user);
     }
 }
