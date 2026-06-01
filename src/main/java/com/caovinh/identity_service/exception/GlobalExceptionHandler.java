@@ -1,4 +1,4 @@
-package com.caovinh.identity_service.dto.response;
+package com.caovinh.identity_service.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,5 +15,5 @@ public class GlobalExceptionHandler {
     ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex){
         return ResponseEntity.badRequest().body(ex.getFieldError().getDefaultMessage());
     }
-
 }
+
