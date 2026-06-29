@@ -1,4 +1,5 @@
-package com.caovinh.identity_service.dto.request;
+package com.caovinh.identity_service.dto.response;
+
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,11 +11,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults( level = AccessLevel.PRIVATE)
-public class UserCreationRequest {
+public class UserResponse {
     String id;
-    @Size(min = 4 , message = "USERNAME_INVALID")
     String username;
-    @Size(min = 4, message = "PASSWORD_INVALID")
     String password;
     String firstName;
     String lastName;

@@ -3,9 +3,12 @@ package com.caovinh.identity_service.controller;
 import com.caovinh.identity_service.dto.request.UserCreationRequest;
 import com.caovinh.identity_service.dto.request.UserUpdateRequest;
 import com.caovinh.identity_service.dto.response.ApiResponse;
+import com.caovinh.identity_service.dto.response.UserResponse;
 import com.caovinh.identity_service.entity.User;
 import com.caovinh.identity_service.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,55 +16,65 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/users")
 public class UserController {
-    @Autowired
-    private UserService userService;
+    UserService userService;
 
     @PostMapping
-    ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest user){
-        ApiResponse<User> apiResponse = new ApiResponse<>();
-        apiResponse.setData(userService.createUser(user));
-        apiResponse.setMessage("User created successfully");
-        return apiResponse;
+    ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest user){
+//        C1
+//        ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
+//        apiResponse.setData(userService.createUser(user));
+//        apiResponse.setMessage("User created successfully");
+//        return apiResponse;
+
+        // C2
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.createUser(user))
+                .message("User created successfully")
+                .build();
     }
 
     @GetMapping
-    ApiResponse<List<User>> getAllUsers() {
-        ApiResponse<List<User>> apiResponse = new ApiResponse<>();
-        apiResponse.setData(userService.getAllUsers());
-        return apiResponse;
+    ApiResponse<List<UserResponse>> getAllUsers() {
+        return ApiResponse.<List<UserResponse>>builder()
+                .data(userService.getAllUsers())
+                .message("Get all users successfully")
+                .build();
     }
 
     @GetMapping("/{userId}")
-    ApiResponse<User> getUserById(@PathVariable("userId") String userId) {
-        ApiResponse<User> apiResponse = new ApiResponse<>();
-        apiResponse.setData(userService.getUserById(userId));
-        return apiResponse;
+    ApiResponse<UserResponse> getUserById(@PathVariable("userId") String userId) {
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.getUserById(userId))
+                .message("Get user by ID successfully")
+                .build();
     }
 
     @PutMapping("/{userId}")
-    ApiResponse<User> updateUser(@PathVariable("userId") String userId, @RequestBody UserUpdateRequest request){
-        ApiResponse<User> apiResponse = new ApiResponse<>();
-        apiResponse.setData(userService.updateUser(userId, request));
-        apiResponse.setMessage("User updated successfully");
-        return apiResponse;
+    ApiResponse<UserResponse> updateUser(@PathVariable("userId") String userId, @RequestBody UserUpdateRequest request){
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.updateUser(userId, request))
+                .message("User updated successfully")
+                .build();
     }
 
     @PatchMapping("/{userId}/partial")
-    ApiResponse<User> updateUserPartially(@PathVariable("userId") String userId, @RequestBody UserUpdateRequest request){
-            ApiResponse<User> apiResponse = new ApiResponse<>();
-            apiResponse.setData(userService.updateUserPartially(userId, request));
-            apiResponse.setMessage("User updated successfully");
-            return apiResponse;
+    ApiResponse<UserResponse> updateUserPartially(@PathVariable("userId") String userId, @RequestBody UserUpdateRequest request){
+            return ApiResponse.<UserResponse>builder()
+                    .data(userService.updateUserPartially(userId, request))
+                    .message("User updated successfully")
+                    .build();
     }
 
     @DeleteMapping("/{userId}")
     ApiResponse<Void> deleteUser(@PathVariable("userId") String userId) {
         userService.deleteUser(userId);
-        ApiResponse<Void> apiResponse = new ApiResponse<>();
-        apiResponse.setMessage("User deleted successfully");
-        return apiResponse;
+        return ApiResponse.<Void>builder()
+                .message("User deleted successfully")
+                .build();
     }
 
 }

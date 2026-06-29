@@ -1,6 +1,7 @@
 package com.caovinh.identity_service.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 
 import java.time.LocalDate;
 
