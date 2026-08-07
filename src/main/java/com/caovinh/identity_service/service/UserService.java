@@ -4,6 +4,7 @@ import com.caovinh.identity_service.dto.request.UserCreationRequest;
 import com.caovinh.identity_service.dto.request.UserUpdateRequest;
 import com.caovinh.identity_service.dto.response.UserResponse;
 import com.caovinh.identity_service.entity.User;
+import com.caovinh.identity_service.enums.Role;
 import com.caovinh.identity_service.exception.AppException;
 import com.caovinh.identity_service.exception.ErrorCode;
 import com.caovinh.identity_service.mapper.UserMapper;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -23,14 +25,18 @@ import java.util.List;
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
+    PasswordEncoder passwordEncoder;
 
     public UserResponse createUser(UserCreationRequest request){
         if (userRepository.existsByUsername(request.getUsername())){
             throw new AppException(ErrorCode.USERNAME_ALREADY_EXISTS);
         }
         User user = userMapper.toUser(request);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+        user.setRoles(roles);
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
