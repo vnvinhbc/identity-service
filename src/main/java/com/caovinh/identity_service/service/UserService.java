@@ -41,7 +41,7 @@ public class UserService {
 
         HashSet<String> roles = new HashSet<>();
         roles.add(Role.USER.name());
-        user.setRoles(roles);
+//        user.setRoles(roles);
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
@@ -74,6 +74,7 @@ public class UserService {
         userRepository.delete(user);
     }
 
+    @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
         String username = context.getAuthentication().getName();
