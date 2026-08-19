@@ -1,5 +1,6 @@
 package com.caovinh.identity_service.dto.response;
 
+import com.caovinh.identity_service.dto.request.RoleResponse;
 import com.caovinh.identity_service.entity.Role;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -19,5 +20,5 @@ public class UserResponse {
     String firstName;
     String lastName;
     LocalDate dob;
-    Set<Role> roles;
+    Set<RoleResponse> roles;
 }

@@ -18,10 +18,14 @@ public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "username", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "roles", ignore = true)
     void updateUser(UserUpdateRequest userUpdateRequest, @MappingTarget User user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "username", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "roles", ignore = true)
     void updateUserPartially(UserUpdateRequest userUpdateRequest, @MappingTarget User user);
 }

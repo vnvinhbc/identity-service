@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -19,4 +20,6 @@ public class UserUpdateRequest {
     String firstName;
     String lastName;
     LocalDate dob;
+
+    List<String> roles;
 }

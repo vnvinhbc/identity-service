@@ -8,6 +8,7 @@ import com.caovinh.identity_service.enums.Role;
 import com.caovinh.identity_service.exception.AppException;
 import com.caovinh.identity_service.exception.ErrorCode;
 import com.caovinh.identity_service.mapper.UserMapper;
+import com.caovinh.identity_service.repository.RoleRepository;
 import com.caovinh.identity_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,6 +32,7 @@ public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
 
     public UserResponse createUser(UserCreationRequest request){
         if (userRepository.existsByUsername(request.getUsername())){
@@ -45,7 +47,8 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE_BLOG')")
     public List<UserResponse> getAllUsers() {
         log.info("Getting all users");
         return userMapper.toUserResponseList(userRepository.findAll());
@@ -60,12 +63,18 @@ public class UserService {
     public UserResponse updateUser(String userId, UserUpdateRequest request ){
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         userMapper.updateUser(request, user);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        var roles = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
     public UserResponse updateUserPartially(String userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         userMapper.updateUserPartially(request, user);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        var roles = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
